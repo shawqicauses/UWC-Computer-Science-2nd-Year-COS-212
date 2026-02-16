@@ -86,6 +86,24 @@ class Practical {
         return maxSoFar;
     }
 
+    public static int mcsOn(int[] X) {
+        int n = X.length;
+
+        int maxSoFar = 0;
+
+        int maxToHere = 0;
+
+        countOn = 0;
+
+        for (int i = 0; i < n; i++) {
+            maxToHere = Math.max(maxToHere + X[i], 0);
+            maxSoFar = Math.max(maxSoFar, maxToHere);
+            countOn++;
+        }
+
+        return maxSoFar;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
