@@ -1,3 +1,9 @@
+// Shawqi Fares
+// 4515520
+// Practical 12
+
+import java.util.Random;
+
 class Practical {
     static long countOn3 = 0;
     static long countOn2A = 0;
@@ -104,7 +110,48 @@ class Practical {
         return maxSoFar;
     }
 
+    public static int[] generateRandomArray(int n, Random random) {
+        int[] X = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            int value = random.nextInt(n) + 1;
+
+            if (random.nextBoolean()) {
+                value = -value;
+            }
+
+            X[i] = value;
+        }
+
+        return X;
+    }
+
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        int[] numbers = { 100, 1000, 10000, 100000, 1000000 };
+
+        System.out.printf("%-12s%-24s%-24s%-24s%-24s%n", "n", "O(n^3)", "O(n^2)", "O(n^2)b", "O(n)");
+
+        Random random = new Random(42);
+
+        for (int n : numbers) {
+            int[] X = generateRandomArray(n, random);
+
+            long mainCountOn3 = -1;
+
+            mcsOn3(X);
+            mainCountOn3 = countOn3;
+
+            mcsOn2A(X);
+            long mainCountOn2A = countOn2A;
+
+            mcsOn2B(X);
+            long mainCountOn2B = countOn2B;
+
+            mcsOn(X);
+            long mainCountOn = countOn;
+
+            System.out.printf("%-12d%-24s%-24d%-24d%-24d%n", n, mainCountOn3, mainCountOn2A, mainCountOn2B,
+                    mainCountOn);
+        }
     }
 }
