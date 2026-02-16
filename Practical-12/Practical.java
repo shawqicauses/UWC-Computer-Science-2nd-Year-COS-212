@@ -30,6 +30,29 @@ class Practical {
         return maxSoFar;
     }
 
+    public static int mcsOn2A(int[] X) {
+        int n = X.length;
+
+        int maxSoFar = 0;
+
+        countOn2A = 0;
+
+        for (int low = 0; low < n; low++) {
+            int sum = 0;
+
+            for (int r = low; r < n; r++) {
+                sum += X[r];
+                countOn2A++;
+
+                if (sum > maxSoFar) {
+                    maxSoFar = sum;
+                }
+            }
+        }
+
+        return maxSoFar;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
