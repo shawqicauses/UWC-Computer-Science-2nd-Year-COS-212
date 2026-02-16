@@ -53,6 +53,39 @@ class Practical {
         return maxSoFar;
     }
 
+    // using prefix sum
+    public static int mcsOn2B(int[] X) {
+        int n = X.length;
+
+        int[] sumTo = new int[n + 1];
+
+        sumTo[0] = 0;
+
+        for (int i = 0; i < n; i++) {
+            sumTo[i + 1] = sumTo[i] + X[i];
+        }
+
+        int maxSoFar = 0;
+
+        countOn2B = 0;
+
+        for (int low = 0; low < n; low++) {
+
+            for (int high = low; high < n; high++) {
+
+                int sum = sumTo[high + 1] - sumTo[low];
+
+                countOn2B++;
+
+                if (sum > maxSoFar) {
+                    maxSoFar = sum;
+                }
+            }
+        }
+
+        return maxSoFar;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
