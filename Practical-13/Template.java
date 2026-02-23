@@ -1,6 +1,64 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Template {
+    static class Node {
+        int key;
+        String data;
+
+        Node(int key, String data) {
+            this.key = key;
+            this.data = data;
+        }
+    }
+
+    public static Node[] load_nodes(String file_name) throws IOException {
+        List<Node> list = new ArrayList<>();
+        Path path = Paths.get(file_name);
+
+        if (!Files.exists(path)) {
+            Path fall_back = Paths.get("Practical-13", file_name);
+
+            if (Files.exists(fall_back)) {
+                path = fall_back;
+            }
+        }
+
+        BufferedReader buffered_reader = Files.newBufferedReader(path);
+
+        String line;
+
+        while ((line = buffered_reader.readLine()) != null) {
+            line = line.trim();
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            int first_space = line.indexOf(' ');
+
+            if (first_space == -1) {
+                continue;
+            }
+
+            int key = Integer.parseInt(line.substring(0, first_space));
+
+            String data = line.substring(first_space + 1);
+
+            list.add(new Node(key, data));
+        }
+
+        buffered_reader.close();
+
+        return list.toArray(new Node[0]);
+    }
+
     public static int N = 1; // placeholder number
 
     public static void main(String[] args) {
