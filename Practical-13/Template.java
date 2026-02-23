@@ -59,6 +59,34 @@ public class Template {
         return list.toArray(new Node[0]);
     }
 
+    public static int linear_search(Node[] array, int key) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].key == key) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static int binary_search(Node[] array, int key) {
+        int low = 0, high = array.length - 1;
+
+        while (low <= high) {
+            int mid = (low + high) >>> 1;
+
+            if (array[mid].key == key) {
+                return mid;
+            } else if (array[mid].key < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        return -1;
+    }
+
     public static int N = 1; // placeholder number
 
     public static void main(String[] args) {
