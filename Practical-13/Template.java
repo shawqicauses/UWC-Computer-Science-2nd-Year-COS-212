@@ -1,3 +1,7 @@
+// SHAWQI FARES
+// 4515520
+// PRACTICAL 13
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,6 +10,7 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Template {
     static class Node {
@@ -87,38 +92,15 @@ public class Template {
         return -1;
     }
 
-    public static int N = 1; // placeholder number
-
-    public static void main(String[] args) {
-        DecimalFormat two_D = new DecimalFormat("0.00");
-        DecimalFormat four_D = new DecimalFormat("0.0000");
-        DecimalFormat five_D = new DecimalFormat("0.00000");
-
-        long start, finish;
-        double run_time = 0, run_time_2 = 0, time;
-        double total_time = 0.0;
-        int n = N;
-        int repetition, repetitions = 30;
-
-        run_time = 0;
-
-        for (repetition = 0; repetition < repetitions; repetition++) {
-            start = System.currentTimeMillis();
-
-            // linear_search(n);
-            // binary_search(n);
-
-            finish = System.currentTimeMillis();
-
-            time = (double) (finish - start);
-            run_time += time;
-            run_time_2 += (time * time);
-        }
-
+    private static void print_statistics(String label, DecimalFormat four_D, DecimalFormat five_D, double run_time,
+            double run_time_2,
+            int n,
+            int repetitions) {
         double ave_runtime = run_time / repetitions;
-        double std_deviation = Math.sqrt(run_time_2 - repetitions * ave_runtime * ave_runtime) / (repetitions - 1);
+        double variance = (run_time_2 - repetitions * ave_runtime * ave_runtime) / (repetitions - 1);
+        double std_deviation = Math.sqrt(Math.max(0.0, variance));
 
-        System.out.printf("\n\n\fStatistics\n");
+        System.out.printf("\n\n\fStatistics (%s)\n", label);
 
         System.out.println("________________________________________________");
 
@@ -142,6 +124,55 @@ public class Template {
         System.out.println();
 
         System.out.println();
+    }
 
+    public static void main(String[] args) throws IOException {
+        DecimalFormat four_D = new DecimalFormat("0.0000");
+        DecimalFormat five_D = new DecimalFormat("0.00000");
+
+        Node[] nodes = load_nodes("ulysses.numbered");
+        int n = nodes.length;
+
+        int repetitions = 30;
+        int[] keys = new int[repetitions];
+
+        Random random = new Random();
+
+        for (int i = 0; i < repetitions; i++) {
+            keys[i] = random.nextInt(32654) + 1;
+        }
+
+        long start, finish;
+
+        double time;
+        double run_time_linear = 0, run_time_2_linear = 0;
+        double run_time_binary = 0, run_time_2_binary = 0;
+
+        for (int repetition = 0; repetition < repetitions; repetition++) {
+            int key = keys[repetition];
+
+            start = System.nanoTime();
+
+            linear_search(nodes, key);
+
+            finish = System.nanoTime();
+
+            time = (finish - start) / 1_000_000.0;
+            run_time_linear += time;
+            run_time_2_linear += (time * time);
+
+            start = System.nanoTime();
+
+            binary_search(nodes, key);
+
+            finish = System.nanoTime();
+
+            time = (finish - start) / 1_000_000.0;
+            run_time_binary += time;
+            run_time_2_binary += (time * time);
+        }
+
+        print_statistics("Linear Search", four_D, five_D, run_time_linear, run_time_2_linear, n, repetitions);
+        print_statistics("Binary Search", four_D, five_D, run_time_binary, run_time_2_binary, n, repetitions);
     }
 }
