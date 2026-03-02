@@ -24,17 +24,17 @@ public class openHash {
 
         this.m = m;
 
-        this.keys = new String[m];
-        this.values = new String[m];
+        this.keys = new String[m + 1];
+        this.values = new String[m + 1];
 
-        this.states = new byte[m];
+        this.states = new byte[m + 1];
 
         this.seed = mix_64(System.nanoTime() ^ (long) System.identityHashCode(this));
     }
 
     // scatter method
     public int hash(String key) {
-        return index_0(key) + 1;
+        return index_1(key);
     }
 
     // insert method
@@ -45,11 +45,11 @@ public class openHash {
             throw new IllegalStateException("table is full");
         }
 
-        int base = index_0(key);
+        int base = index_1(key);
         int first_deleted = -1;
 
         for (int step = 0; step < m; step++) {
-            int index = (base + step) % m;
+            int index = ((base - 1 + step) % m) + 1;
             byte state = states[index];
 
             if (state == EMPTY) {
@@ -125,10 +125,10 @@ public class openHash {
     private int find_index(String key) {
         Objects.requireNonNull(key, "key");
 
-        int base = index_0(key);
+        int base = index_1(key);
 
         for (int step = 0; step < m; step++) {
-            int index = (base + step) % m;
+            int index = ((base - 1 + step) % m) + 1;
             byte state = states[index];
 
             if (state == EMPTY) {
@@ -143,14 +143,14 @@ public class openHash {
         return -1;
     }
 
-    private int index_0(String key) {
+    private int index_1(String key) {
         Objects.requireNonNull(key, "key");
 
         long x = ((long) key.hashCode()) ^ seed;
         long mixed = mix_64(x);
         int positive = (int) (mixed & 0x7fffffffL);
 
-        return positive % m;
+        return (positive % m) + 1;
     }
 
     private static long mix_64(long z) {

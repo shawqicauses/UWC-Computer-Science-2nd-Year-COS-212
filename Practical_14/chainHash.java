@@ -30,21 +30,21 @@ public class chainHash {
 
         this.m = m;
 
-        this.table = new Node[m];
+        this.table = new Node[m + 1];
 
         this.seed = mix_64(System.nanoTime() ^ (long) System.identityHashCode(this));
     }
 
     // scatter method
     public int hash(String key) {
-        return index_0(key) + 1;
+        return index_1(key);
     }
 
     // insert method
     public void insert(String key, String value) {
         Objects.requireNonNull(key, "key");
 
-        int index = index_0(key);
+        int index = index_1(key);
 
         Node head = table[index];
 
@@ -78,7 +78,7 @@ public class chainHash {
     public String lookup(String key) {
         Objects.requireNonNull(key, "key");
 
-        int index = index_0(key);
+        int index = index_1(key);
 
         Node current = table[index];
 
@@ -97,7 +97,7 @@ public class chainHash {
     public String remove(String key) {
         Objects.requireNonNull(key, "key");
 
-        int index = index_0(key);
+        int index = index_1(key);
 
         Node current = table[index];
         Node previous = null;
@@ -133,14 +133,14 @@ public class chainHash {
     }
 
     // internal helpers
-    private int index_0(String key) {
+    private int index_1(String key) {
         Objects.requireNonNull(key, "key");
 
         long x = ((long) key.hashCode()) ^ seed;
         long mixed = mix_64(x);
         int positive = (int) (mixed & 0x7fffffffL);
 
-        return positive % m;
+        return (positive % m) + 1;
     }
 
     private static long mix_64(long z) {
