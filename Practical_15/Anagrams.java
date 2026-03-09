@@ -1,10 +1,17 @@
+// SHAWQI FARES
+// 4515520
+// PRACTICAL 15
+
 package Practical_15;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,5 +108,62 @@ public class Anagrams {
                 anagrams_only.put(sorted.get(0), sorted);
             }
         }
+
+        List<String> anagram_lines = new ArrayList<>();
+
+        for (List<String> words : anagrams_only.values()) {
+            String anagram_list = String.join(" ", words);
+
+            anagram_lines.add(anagram_list);
+
+            for (int repeat = 0; repeat < words.size() - 1; repeat++) {
+                int space = anagram_list.indexOf(' ');
+
+                anagram_list = anagram_list.substring(space + 1) + " " + anagram_list.substring(0, space);
+
+                anagram_lines.add(anagram_list);
+            }
+        }
+
+        Collections.sort(anagram_lines);
+
+        String output_directory = file.getParent();
+
+        String output_file = output_directory != null
+                ? output_directory + File.separator + "theAnagrams.tex"
+                : "theAnagrams.tex";
+
+        try (PrintWriter out = new PrintWriter(
+                new OutputStreamWriter(new FileOutputStream(output_file), StandardCharsets.UTF_8))) {
+
+            char letter = 0;
+
+            for (String lemma : anagram_lines) {
+                char initial = lemma.charAt(0);
+
+                if (Character.toLowerCase(initial) != letter) {
+                    letter = Character.toLowerCase(initial);
+
+                    out.println();
+
+                    out.println("\\vspace{14pt}");
+
+                    out.println("\\noindent\\textbf{\\Large " + Character.toUpperCase(initial) + "}\\\\*[+12pt]");
+                }
+
+                out.print(lemma);
+
+                out.println("\\\\");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error writing " + output_file + ": " + e.getMessage());
+
+            return;
+        }
+
+        System.out.println("Anagram dictionary built. Found " + anagrams_only.size() + " anagram groups.");
+
+        System.out.println("Output written to " + output_file);
     }
 }
