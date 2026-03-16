@@ -74,6 +74,24 @@ public class tryHeapSort {
         }
     }
 
+    private static void sift_up(String[] array, int i) {
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+
+            if (array[i].compareTo(array[parent]) <= 0) {
+                break;
+            }
+
+            String temporary = array[i];
+
+            array[i] = array[parent];
+
+            array[parent] = temporary;
+
+            i = parent;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("Heap Sort");
     }
