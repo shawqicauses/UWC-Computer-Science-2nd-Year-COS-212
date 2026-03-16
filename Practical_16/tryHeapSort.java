@@ -92,18 +92,42 @@ public class tryHeapSort {
         }
     }
 
-    public static void build_heap_bottom_up(String[] arr) {
-        int n = arr.length;
+    public static void build_heap_bottom_up(String[] array) {
+        int n = array.length;
 
         for (int i = n / 2 - 1; i >= 0; i--) {
-            sift_down(arr, i, n);
+            sift_down(array, i, n);
         }
     }
 
-    public static void build_heap_top_down(String[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            sift_up(arr, i);
+    public static void build_heap_top_down(String[] array) {
+        for (int i = 1; i < array.length; i++) {
+            sift_up(array, i);
         }
+    }
+
+    public static void heap_sort_from_heap(String[] array) {
+        int n = array.length;
+
+        for (int i = n - 1; i > 0; i--) {
+            String temporary = array[0];
+
+            array[0] = array[i];
+
+            array[i] = temporary;
+
+            sift_down(array, 0, i);
+        }
+    }
+
+    public static void heap_sort_bottom_up(String[] array) {
+        build_heap_bottom_up(array);
+        heap_sort_from_heap(array);
+    }
+
+    public static void heap_sort_top_down(String[] array) {
+        build_heap_top_down(array);
+        heap_sort_from_heap(array);
     }
 
     public static void main(String[] args) {
