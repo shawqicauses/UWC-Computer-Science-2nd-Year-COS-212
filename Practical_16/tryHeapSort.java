@@ -1,3 +1,7 @@
+// SHAWQI FARES
+// 4515520
+// PRACTICAL 16
+
 package Practical_16;
 
 import java.io.BufferedReader;
@@ -11,16 +15,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Heap sort implementation using words from James Joyce's Ulysses.
+ * Supports two heap construction strategies: bottom-up (O(n)) and top-down (O(n
+ * log n)).
+ */
 public class tryHeapSort {
+
+    /** Strip leading/trailing punctuation from a word. */
     private static String clean_word(String word) {
         return word.replaceAll("^[...,;:_!\\-]+|[...,;:_!\\-]+$", "");
     }
 
+    /**
+     * Load words from a text file. Tries current dir, then Practical_16, then
+     * Practical_15.
+     */
     public static String[] load_words(String file_path) throws IOException {
         List<String> words = new ArrayList<>();
 
         File file = new File(file_path);
 
+        // Fall-back paths for lab environment
         if (!file.exists()) {
             file = new File("Practical_16/" + file_path);
         }
@@ -52,10 +68,14 @@ public class tryHeapSort {
         return words.toArray(new String[0]);
     }
 
+    /**
+     * Restore max-heap property by sifting node i down. Children are at 2 * i + 1
+     * and 2 * i + 2.
+     */
     private static void sift_down(String[] array, int i, int heap_size) {
         int largest = i;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
+        int left = 2 * i + 1; // left child index
+        int right = 2 * i + 2; // right child index
 
         if (left < heap_size && array[left].compareTo(array[largest]) > 0) {
             largest = left;
@@ -67,15 +87,16 @@ public class tryHeapSort {
 
         if (largest != i) {
             String temporary = array[i];
-
             array[i] = array[largest];
-
             array[largest] = temporary;
 
             sift_down(array, largest, heap_size);
         }
     }
 
+    /**
+     * Restore max-heap property by sifting node i up toward its parent.
+     */
     private static void sift_up(String[] array, int i) {
         while (i > 0) {
             int parent = (i - 1) / 2;
@@ -85,15 +106,18 @@ public class tryHeapSort {
             }
 
             String temporary = array[i];
-
             array[i] = array[parent];
-
             array[parent] = temporary;
 
             i = parent;
         }
     }
 
+    /**
+     * Build max-heap from bottom up. Start from last non-leaf (n/2 - 1) and sift
+     * down.
+     * Time: O(n).
+     */
     public static void build_heap_bottom_up(String[] array) {
         int n = array.length;
 
@@ -102,36 +126,47 @@ public class tryHeapSort {
         }
     }
 
+    /**
+     * Build max-heap top down by inserting each element and sifting up.
+     * Time: O(n log n).
+     */
     public static void build_heap_top_down(String[] array) {
         for (int i = 1; i < array.length; i++) {
             sift_up(array, i);
         }
     }
 
+    /**
+     * Extract max repeatedly and place at end. Produces ascending alphabetical
+     * order.
+     * Shared by both bottom-up and top-down heap sorts.
+     */
     public static void heap_sort_from_heap(String[] array) {
         int n = array.length;
 
         for (int i = n - 1; i > 0; i--) {
+            // Swap root (max) with last element, then restore heap on reduced range
             String temporary = array[0];
-
             array[0] = array[i];
-
             array[i] = temporary;
 
             sift_down(array, 0, i);
         }
     }
 
+    /** Full heap sort: build heap bottom-up, then extract. */
     public static void heap_sort_bottom_up(String[] array) {
         build_heap_bottom_up(array);
         heap_sort_from_heap(array);
     }
 
+    /** Full heap sort: build heap top-down, then extract. */
     public static void heap_sort_top_down(String[] array) {
         build_heap_top_down(array);
         heap_sort_from_heap(array);
     }
 
+    /** Print timing statistics (average, std dev, etc.). */
     private static void print_timings(String label, DecimalFormat four_D, DecimalFormat five_D, double run_time,
             double run_time_2, int n, int repetitions) {
         double ave_run_time = run_time / repetitions;
@@ -165,6 +200,7 @@ public class tryHeapSort {
         DecimalFormat four_D = new DecimalFormat("0.0000");
         DecimalFormat five_D = new DecimalFormat("0.00000");
 
+        // (c) Test with short array first (~ 20 words)
         String[] test_words = { "the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog", "ulysses",
                 "joyce", "dublin", "bloom", "stephen", "molly", "ireland", "river", "sea" };
 
@@ -185,7 +221,9 @@ public class tryHeapSort {
             System.out.println("\nBoth sorts produce identical alphabetical order. ✓");
         }
 
+        // Load Ulysses data for full timing run
         String input_file = "ulysses.text";
+
         if (args.length >= 1) {
             input_file = args[0];
         }
@@ -205,6 +243,7 @@ public class tryHeapSort {
 
         System.out.println("\n=== Timings on " + n + " words (" + repetitions + " repetitions) ===\n");
 
+        // (d) & (e) Time both sorts and display results
         double run_time_bottom_up = 0, run_time_bottom_up_2 = 0;
         double run_time_top_down = 0, run_time_top_down_2 = 0;
 
