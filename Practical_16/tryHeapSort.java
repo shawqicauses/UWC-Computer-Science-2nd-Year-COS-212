@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +129,35 @@ public class tryHeapSort {
     public static void heap_sort_top_down(String[] array) {
         build_heap_top_down(array);
         heap_sort_from_heap(array);
+    }
+
+    private static void print_timings(String label, DecimalFormat four_D, DecimalFormat five_D, double run_time,
+            double run_time_2, int n, int repetitions) {
+        double ave_run_time = run_time / repetitions;
+
+        double variance = (run_time_2 - repetitions * ave_run_time * ave_run_time) / (repetitions - 1);
+
+        double std_deviation = Math.sqrt(Math.max(0.0, variance));
+
+        System.out.println("\n________________________________________________");
+        System.out.println("Statistics (" + label + ")");
+
+        System.out.println("________________________________________________");
+        System.out.println("Total Time = " + run_time / 1000 + " s.");
+
+        System.out.println(
+                "Average Time = " + five_D.format(ave_run_time / 1000) + " s. ± " + four_D.format(std_deviation)
+                        + " ms.");
+
+        System.out.println("Standard Deviation = " + four_D.format(std_deviation) + " ms.");
+
+        System.out.println("n = " + n);
+
+        System.out.println("Average Time / Run = " + five_D.format(ave_run_time / n * 1000) + " µs.");
+
+        System.out.println("Repetitions = " + repetitions);
+
+        System.out.println("________________________________________________");
     }
 
     public static void main(String[] args) {
