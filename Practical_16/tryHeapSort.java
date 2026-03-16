@@ -50,6 +50,30 @@ public class tryHeapSort {
         return words.toArray(new String[0]);
     }
 
+    private static void sift_down(String[] array, int i, int heap_size) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        if (left < heap_size && array[left].compareTo(array[largest]) > 0) {
+            largest = left;
+        }
+
+        if (right < heap_size && array[right].compareTo(array[largest]) > 0) {
+            largest = right;
+        }
+
+        if (largest != i) {
+            String temporary = array[i];
+
+            array[i] = array[largest];
+
+            array[largest] = temporary;
+
+            sift_down(array, largest, heap_size);
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("Heap Sort");
     }
