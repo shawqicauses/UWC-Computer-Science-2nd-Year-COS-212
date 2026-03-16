@@ -92,6 +92,20 @@ public class tryHeapSort {
         }
     }
 
+    public static void build_heap_bottom_up(String[] arr) {
+        int n = arr.length;
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            sift_down(arr, i, n);
+        }
+    }
+
+    public static void build_heap_top_down(String[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            sift_up(arr, i);
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("Heap Sort");
     }
