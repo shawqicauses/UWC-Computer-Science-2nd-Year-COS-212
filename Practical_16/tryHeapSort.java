@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class tryHeapSort {
@@ -161,6 +162,86 @@ public class tryHeapSort {
     }
 
     public static void main(String[] args) {
-        System.out.println("Heap Sort");
+        DecimalFormat four_D = new DecimalFormat("0.0000");
+        DecimalFormat five_D = new DecimalFormat("0.00000");
+
+        String[] test_words = { "the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog", "ulysses",
+                "joyce", "dublin", "bloom", "stephen", "molly", "ireland", "river", "sea" };
+
+        System.out.println("=== Test with short array (20 words) ===\n");
+        System.out.println("Original: " + Arrays.toString(test_words));
+
+        String[] copy_1 = test_words.clone();
+        heap_sort_bottom_up(copy_1);
+        System.out.println("Bottom-up heap sort: " + Arrays.toString(copy_1));
+
+        String[] copy_2 = test_words.clone();
+        heap_sort_top_down(copy_2);
+        System.out.println("Top-down heap sort:  " + Arrays.toString(copy_2));
+
+        if (!Arrays.equals(copy_1, copy_2)) {
+            System.err.println("ERROR: Bottom-up and top-down sorts produced different results!");
+        } else {
+            System.out.println("\nBoth sorts produce identical alphabetical order. ✓");
+        }
+
+        String input_file = "ulysses.text";
+        if (args.length >= 1) {
+            input_file = args[0];
+        }
+
+        String[] words;
+
+        try {
+            words = load_words(input_file);
+        } catch (IOException e) {
+            System.err.println("Could not load " + input_file + ": " + e.getMessage());
+            System.err.println("Using test words for timing demo.");
+            words = test_words;
+        }
+
+        int n = words.length;
+        int repetitions = 30;
+
+        System.out.println("\n=== Timings on " + n + " words (" + repetitions + " repetitions) ===\n");
+
+        double run_time_bottom_up = 0, run_time_bottom_up_2 = 0;
+        double run_time_top_down = 0, run_time_top_down_2 = 0;
+
+        for (int r = 0; r < repetitions; r++) {
+            String[] array_1 = words.clone();
+
+            long start = System.nanoTime();
+
+            heap_sort_bottom_up(array_1);
+
+            long finish = System.nanoTime();
+
+            double time = (finish - start) / 1_000_000.0;
+
+            run_time_bottom_up += time;
+            run_time_bottom_up_2 += (time * time);
+
+            String[] array_2 = words.clone();
+
+            start = System.nanoTime();
+
+            heap_sort_top_down(array_2);
+
+            finish = System.nanoTime();
+
+            time = (finish - start) / 1_000_000.0;
+
+            run_time_top_down += time;
+            run_time_top_down_2 += (time * time);
+        }
+
+        System.out.println("                    HEAP SORT TIMING COMPARISON");
+        print_timings("Bottom-up heap sort", four_D, five_D, run_time_bottom_up, run_time_bottom_up_2, n, repetitions);
+        print_timings("Top-down heap sort", four_D, five_D, run_time_top_down, run_time_top_down_2, n, repetitions);
+
+        System.out.println("\nSummary:");
+        System.out.printf("  Bottom-up: %s ms average%n", five_D.format(run_time_bottom_up / repetitions));
+        System.out.printf("  Top-down:  %s ms average%n", five_D.format(run_time_top_down / repetitions));
     }
 }
