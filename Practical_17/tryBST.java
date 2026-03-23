@@ -1,6 +1,11 @@
+// SHAWQI FARES
+// 4515520
+// PRACTICAL 17
+
 package Practical_17;
 
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Queue;
 
 public class tryBST {
@@ -131,7 +136,7 @@ public class tryBST {
      * so resulting tree is a perfect balanced BST.
      *
      * Strategy: find middle of range, insert it, then recursively
-     * do the same for left half and right half.
+     * do same for left half and right half.
      * Processing middles level-by-level is equivalent to a queue-based BFS
      * approach.
      */
@@ -175,5 +180,106 @@ public class tryBST {
         if (node.key % 2 == 0) {
             delete(node.key);
         }
+    }
+
+    public static void main(String[] args) {
+        int n = (args.length > 0) ? Integer.parseInt(args[0]) : 25;
+        int repetitions = 30;
+
+        // Quick validation with small n
+        System.out.println("=== Validation with n = 4 ===");
+
+        tryBST test = new tryBST();
+
+        test.populate_balanced(4);
+
+        int expected_size = (1 << 4) - 1; // 15
+
+        System.out.println("Size: " + test.size() + " (expected " + expected_size + ")");
+        System.out.println("Height: " + test.height());
+        System.out.println("isBST: " + test.isBST());
+        System.out.print("In-order: ");
+
+        test.in_order();
+        test.remove_evens();
+
+        System.out.println("After removing evens:");
+        System.out.println("Size: " + test.size());
+        System.out.println("isBST: " + test.isBST());
+        System.out.print("In-order: ");
+
+        test.in_order();
+
+        System.out.println();
+
+        // Bench-marking
+        System.out.println("=== Bench-marking with n = " + n + ", " + repetitions + " repetitions ===");
+
+        int num_keys = (1 << n) - 1;
+
+        System.out.println("Number of keys: " + num_keys);
+        System.out.println();
+
+        double[] populate_times = new double[repetitions];
+        double[] remove_times = new double[repetitions];
+
+        for (int r = 0; r < repetitions; r++) {
+            tryBST tree = new tryBST();
+
+            long start_populate = System.nanoTime();
+
+            tree.populate_balanced(n);
+
+            long end_populate = System.nanoTime();
+
+            populate_times[r] = (end_populate - start_populate) / 1_000_000.0;
+
+            long start_remove = System.nanoTime();
+
+            tree.remove_evens();
+
+            long end_remove = System.nanoTime();
+
+            remove_times[r] = (end_remove - start_remove) / 1_000_000.0;
+        }
+
+        double avg_populate = mean(populate_times);
+        double sd_populate = std_dev(populate_times, avg_populate);
+        double avg_remove = mean(remove_times);
+        double sd_remove = std_dev(remove_times, avg_remove);
+
+        System.out.println("+--------------------------+------------+----------------+----------------+");
+        System.out.println("| Method                   | Number of  | Average time   | Standard       |");
+        System.out.println("|                          | keys n     | in ms.         | Deviation      |");
+        System.out.println("+--------------------------+------------+----------------+----------------+");
+
+        System.out.printf(Locale.US, "| Populate tree            | %10d | %14.2f | %14.2f |%n", num_keys, avg_populate,
+                sd_populate);
+
+        System.out.printf(Locale.US, "| Remove evens from tree   | %10d | %14.2f | %14.2f |%n", num_keys, avg_remove,
+                sd_remove);
+
+        System.out.println("+--------------------------+------------+----------------+----------------+");
+    }
+
+    private static double mean(double[] values) {
+        double sum = 0;
+
+        for (double v : values) {
+            sum += v;
+
+        }
+
+        return sum / values.length;
+    }
+
+    private static double std_dev(double[] values, double mean) {
+        double sum = 0;
+
+        for (double v : values) {
+            sum += (v - mean) * (v - mean);
+        }
+
+        return Math.sqrt(sum / values.length);
     }
 }
