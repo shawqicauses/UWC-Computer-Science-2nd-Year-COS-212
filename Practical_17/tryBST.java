@@ -1,5 +1,8 @@
 package Practical_17;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class tryBST {
     tNode root;
 
@@ -121,5 +124,56 @@ public class tryBST {
         System.out.print(node.key + " ");
 
         in_order_rec(node.right);
+    }
+
+    /**
+     * Populate BST with numbers 1..2 ^ n - 1 in breadth-first (middle) order
+     * so resulting tree is a perfect balanced BST.
+     *
+     * Strategy: find middle of range, insert it, then recursively
+     * do the same for left half and right half.
+     * Processing middles level-by-level is equivalent to a queue-based BFS
+     * approach.
+     */
+    public void populate_balanced(int n) {
+        int max = (1 << n) - 1; // 2 ^ n - 1
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[] { 1, max });
+
+        while (!queue.isEmpty()) {
+            int[] range = queue.poll();
+
+            int low = range[0];
+            int high = range[1];
+
+            if (low > high) {
+                continue;
+            }
+
+            int mid = low + (high - low) / 2;
+
+            insert(mid);
+
+            queue.add(new int[] { low, mid - 1 });
+            queue.add(new int[] { mid + 1, high });
+        }
+    }
+
+    public void remove_evens() {
+        remove_evens_rec(root);
+    }
+
+    private void remove_evens_rec(tNode node) {
+        if (node == null) {
+            return;
+        }
+
+        remove_evens_rec(node.left);
+        remove_evens_rec(node.right);
+
+        if (node.key % 2 == 0) {
+            delete(node.key);
+        }
     }
 }
